@@ -1,0 +1,31 @@
+@model NewsListPageViewModel
+
+<section class="py-5">
+    <div class="container">
+        @await Html.PartialAsync("~/Views/Shared/Partials/_Breadcrumbs.cshtml", Model.Breadcrumbs)
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow text-primary">Bản tin trung tâm</span>
+                <h1>@Model.Title</h1>
+                <p class="page-subtitle">@Model.Subtitle</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var article in Model.Articles)
+            {
+                <div class="col-lg-4">
+                    <article class="news-card h-100">
+                        <div class="news-card-meta">
+                            <span>@article.Category</span>
+                            <span>@article.PublishedOn.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <h3>@article.Title</h3>
+                        <p>@article.Summary</p>
+                        <div class="small text-muted mb-3">Tác giả: @article.Author</div>
+                        <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@article.Slug">Đọc chi tiết</a>
+                    </article>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,70 @@
+@model ProfileViewModel
+
+<section class="py-5">
+    <div class="container">
+        @await Html.PartialAsync("~/Views/Shared/Partials/_Breadcrumbs.cshtml", Model.Breadcrumbs)
+        <div class="page-header">
+            <div>
+                <h1>@Model.Title</h1>
+                <p class="page-subtitle">@Model.Subtitle</p>
+            </div>
+            <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Login">Đổi tài khoản demo</a>
+        </div>
+        <div class="row g-4 mb-4">
+            @foreach (var card in Model.SummaryCards)
+            {
+                <div class="col-md-4">
+                    <div class="stat-card stat-@card.AccentClass">
+                        <div class="stat-icon"><i class="@card.Icon"></i></div>
+                        <div class="stat-content">
+                            <span>@card.Title</span>
+                            <strong>@card.Value</strong>
+                            <p>@card.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row g-4">
+        @foreach (var detailSection in Model.Sections)
+        {
+            <div class="col-lg-6">
+                <div class="panel-card h-100">
+                    <div class="panel-card-header"><div><h3>@detailSection.Title</h3><p>@(detailSection.Description)</p></div></div>
+                    <div class="detail-grid">
+                        @foreach (var item in detailSection.Items)
+                        {
+                            <div class="detail-item">
+                                <span>@item.Label</span>
+                                    @if (item.IsBadge)
+                                    {
+                                        <strong><span class="badge @item.BadgeClass">@item.Value</span></strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>@item.Value</strong>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="panel-card mt-4">
+            <div class="panel-card-header"><div><h3>Hoạt động gần đây</h3><p>Nhật ký mock cho mục đích demo.</p></div></div>
+            <div class="timeline-list">
+                @foreach (var item in Model.RecentActivities)
+                {
+                    <div class="timeline-item">
+                        <span class="timeline-dot bg-@item.AccentClass"></span>
+                        <div>
+                            <div class="d-flex gap-2 align-items-center mb-1"><strong>@item.Title</strong><span class="small text-muted">@item.Meta</span></div>
+                            <p class="mb-0 text-secondary">@item.Description</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

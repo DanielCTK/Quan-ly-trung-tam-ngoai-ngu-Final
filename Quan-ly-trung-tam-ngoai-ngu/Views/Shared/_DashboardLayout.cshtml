@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Dashboard NorthStar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="dashboard-shell">
+    <div class="dashboard-sidebar">
+        @await Html.PartialAsync("~/Views/Shared/Partials/_DashboardSidebar.cshtml")
+    </div>
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <div class="dashboard-greeting">Xin chào, @Context.Session.GetString("DemoUserDisplayName")</div>
+                <div class="dashboard-role">@Context.Session.GetString("DemoUserRole") dashboard</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary btn-sm" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-2"></i>Public site</a>
+                <a class="btn btn-dark btn-sm" asp-area="" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+            </div>
+        </header>
+        <main class="dashboard-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    @await Html.PartialAsync("~/Views/Shared/Partials/_Toast.cshtml")
+    @await Html.PartialAsync("~/Views/Shared/Partials/_ConfirmModal.cshtml")
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

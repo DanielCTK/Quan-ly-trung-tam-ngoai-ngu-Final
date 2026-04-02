@@ -1,0 +1,53 @@
+@model AboutPageViewModel
+
+<section class="py-5">
+    <div class="container">
+        @await Html.PartialAsync("~/Views/Shared/Partials/_Breadcrumbs.cshtml", Model.Breadcrumbs)
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow text-primary">Giới thiệu trung tâm</span>
+                <h1>@Model.Title</h1>
+                <p class="page-subtitle">@Model.Subtitle</p>
+            </div>
+        </div>
+        <div class="row g-4 mb-5">
+            @foreach (var item in Model.Achievements)
+            {
+                <div class="col-md-4">
+                    <div class="stat-card stat-@item.AccentClass">
+                        <div class="stat-icon"><i class="@item.Icon"></i></div>
+                        <div class="stat-content">
+                            <span>@item.Title</span>
+                            <strong>@item.Value</strong>
+                            <p>@item.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="panel-card h-100">
+                    <div class="panel-card-header"><div><h3>Giá trị cốt lõi</h3><p>Nền tảng định hướng trải nghiệm học viên và vận hành.</p></div></div>
+                    <ul class="feature-list">
+                        @foreach (var value in Model.CoreValues)
+                        {
+                            <li><i class="bi bi-check2-circle"></i>@value</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel-card h-100">
+                    <div class="panel-card-header"><div><h3>Lợi thế của hệ thống</h3><p>Những điểm nhóm tập trung thể hiện trong bản skeleton hiện tại.</p></div></div>
+                    <ul class="feature-list">
+                        @foreach (var item in Model.Advantages)
+                        {
+                            <li><i class="bi bi-arrow-up-right-circle"></i>@item</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,18 @@
+@model IEnumerable<BreadcrumbItemViewModel>
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb app-breadcrumb">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+        @foreach (var item in Model)
+        {
+            if (item.IsActive || string.IsNullOrWhiteSpace(item.Url))
+            {
+                <li class="breadcrumb-item active" aria-current="page">@item.Label</li>
+            }
+            else
+            {
+                <li class="breadcrumb-item"><a href="@item.Url">@item.Label</a></li>
+            }
+        }
+    </ol>
+</nav>

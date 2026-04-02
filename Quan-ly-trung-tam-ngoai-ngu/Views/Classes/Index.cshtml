@@ -1,0 +1,50 @@
+@model ClassCatalogPageViewModel
+
+<section class="py-5">
+    <div class="container">
+        @await Html.PartialAsync("~/Views/Shared/Partials/_Breadcrumbs.cshtml", Model.Breadcrumbs)
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow text-primary">Lịch khai giảng</span>
+                <h1>@Model.Title</h1>
+                <p class="page-subtitle">@Model.Subtitle</p>
+            </div>
+        </div>
+        <div class="toolbar-row mb-4">
+            <div class="toolbar-search"><i class="bi bi-search"></i><input class="form-control" placeholder="Tìm theo mã lớp hoặc khóa học..." /></div>
+            <div class="toolbar-filters">
+                @foreach (var filter in Model.Filters)
+                {
+                    <select class="form-select">
+                        <option>@filter.Label</option>
+                        @foreach (var option in filter.Options)
+                        {
+                            <option value="@option.Value">@option.Label</option>
+                        }
+                    </select>
+                }
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var item in Model.Classes)
+            {
+                <div class="col-lg-4">
+                    <div class="schedule-card h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h3>@item.Code</h3>
+                                <p class="mb-0 text-secondary">@item.CourseName</p>
+                            </div>
+                            <span class="badge @AppUi.StatusBadgeClass(item.Status)">@item.Status</span>
+                        </div>
+                        <div class="schedule-meta"><i class="bi bi-person-workspace"></i>@item.TeacherName</div>
+                        <div class="schedule-meta"><i class="bi bi-clock"></i>@item.Schedule</div>
+                        <div class="schedule-meta"><i class="bi bi-door-open"></i>@item.Room</div>
+                        <div class="schedule-meta"><i class="bi bi-calendar-event"></i>@item.StartDate.ToString("dd/MM/yyyy")</div>
+                        <div class="seat-pill mt-3">Còn @item.SeatsLeft chỗ</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

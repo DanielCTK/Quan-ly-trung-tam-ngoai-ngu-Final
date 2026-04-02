@@ -1,0 +1,18 @@
+@{
+    var message = TempData["ToastMessage"]?.ToString();
+    var type = TempData["ToastType"]?.ToString() ?? "success";
+}
+
+@if (!string.IsNullOrWhiteSpace(message))
+{
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast show border-0 app-toast app-toast-@type" role="alert">
+            <div class="toast-header border-0">
+                <strong class="me-auto">Thông báo</strong>
+                <small>vừa xong</small>
+                <button type="button" class="btn-close ms-2 mb-1" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">@message</div>
+        </div>
+    </div>
+}

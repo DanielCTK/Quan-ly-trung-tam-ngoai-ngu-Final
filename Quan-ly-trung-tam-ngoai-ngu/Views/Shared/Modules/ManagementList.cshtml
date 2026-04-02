@@ -1,0 +1,127 @@
+@model ManagementListPageViewModel
+
+<div class="app-page">
+    @await Html.PartialAsync("~/Views/Shared/Partials/_Breadcrumbs.cshtml", Model.Breadcrumbs)
+    <div class="page-header">
+        <div>
+            <h1>@Model.Title</h1>
+            <p class="page-subtitle">@Model.Subtitle</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            @if (!string.IsNullOrWhiteSpace(Model.ExportLabel))
+            {
+                <a href="#" class="btn btn-outline-dark confirm-action" data-confirm-message="Mock thao tác export hoặc in dữ liệu này?"><i class="bi bi-box-arrow-up-right me-2"></i>@Model.ExportLabel</a>
+            }
+            <a class="btn btn-primary" href="@Model.PrimaryActionUrl"><i class="bi bi-plus-circle me-2"></i>@Model.PrimaryActionText</a>
+        </div>
+    </div>
+
+    @if (Model.SummaryCards.Any())
+    {
+        <div class="row g-4 mb-4">
+            @foreach (var card in Model.SummaryCards)
+            {
+                <div class="col-md-6 col-xl-3">
+                    <div class="stat-card stat-@card.AccentClass">
+                        <div class="stat-icon"><i class="@card.Icon"></i></div>
+                        <div class="stat-content">
+                            <span>@card.Title</span>
+                            <strong>@card.Value</strong>
+                            <p>@card.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="panel-card">
+        <div class="toolbar-row">
+            <div class="toolbar-search">
+                <i class="bi bi-search"></i>
+                <input type="text" class="form-control" placeholder="@Model.SearchPlaceholder" />
+            </div>
+            <div class="toolbar-filters">
+                @foreach (var filter in Model.Filters)
+                {
+                    <select class="form-select">
+                        <option>@filter.Label</option>
+                        @foreach (var option in filter.Options)
+                        {
+                            <option value="@option.Value">@option.Label</option>
+                        }
+                    </select>
+                }
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ToolbarNote))
+        {
+            <div class="alert alert-info-soft mb-4">@Model.ToolbarNote</div>
+        }
+        <div class="table-responsive">
+            <table class="table app-table align-middle">
+                <thead>
+                    <tr>
+                        @foreach (var column in Model.Table.Columns)
+                        {
+                            <th style="width:@column.Width">@column.Header</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Table.Rows.Any())
+                    {
+                        @foreach (var row in Model.Table.Rows)
+                        {
+                            <tr>
+                                @for (var i = 0; i < row.Cells.Count; i++)
+                                {
+                                    <td>@Html.Raw(row.Cells[i].Html)</td>
+                                }
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var action in row.Actions)
+                                        {
+                                            if (action.RequiresConfirm)
+                                            {
+                                                <a href="#" class="@action.CssClass confirm-action" data-confirm-message="@action.ConfirmMessage"><i class="@action.Icon me-1"></i>@action.Label</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@action.Url" class="@action.CssClass"><i class="@action.Icon me-1"></i>@action.Label</a>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="@Model.Table.Columns.Count">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <h3>@Model.Table.EmptyTitle</h3>
+                                    <p>@Model.Table.EmptyDescription</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-row">
+            <span class="text-muted">Hiển thị dữ liệu mock, chưa phân trang thật.</span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

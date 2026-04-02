@@ -1,0 +1,67 @@
+@model ManagementFormPageViewModel
+
+<div class="app-page">
+    @await Html.PartialAsync("~/Views/Shared/Partials/_Breadcrumbs.cshtml", Model.Breadcrumbs)
+    <div class="page-header">
+        <div>
+            <h1>@Model.Title</h1>
+            <p class="page-subtitle">@Model.Subtitle</p>
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>@Model.FormTitle</h3>
+                <p>@Model.FormDescription</p>
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Notice))
+        {
+            <div class="alert alert-warning-soft mb-4">@Model.Notice</div>
+        }
+        <form class="row g-4 mock-submit-form">
+            @foreach (var formSection in Model.Sections)
+            {
+                <div class="col-12">
+                    <div class="form-section-title">@formSection.Title</div>
+                    @if (!string.IsNullOrWhiteSpace(formSection.Description))
+                    {
+                        <p class="text-muted">@formSection.Description</p>
+                    }
+                </div>
+                @foreach (var field in formSection.Fields)
+                {
+                    <div class="@field.ColClass">
+                        <label class="form-label">@field.Label</label>
+                        @if (field.Type == "select")
+                        {
+                            <select class="form-select" name="@field.Name" @(field.Required ? "required" : null)>
+                                @foreach (var option in field.Options)
+                                {
+                                    <option value="@option.Value" selected="@option.Selected">@option.Label</option>
+                                }
+                            </select>
+                        }
+                        else if (field.Type == "textarea")
+                        {
+                            <textarea class="form-control" rows="4" name="@field.Name" placeholder="@field.Placeholder" @(field.Required ? "required" : null)>@field.Value</textarea>
+                        }
+                        else
+                        {
+                            <input class="form-control" type="@field.Type" name="@field.Name" value="@field.Value" placeholder="@field.Placeholder" @(field.Required ? "required" : null) @(field.ReadOnly ? "readonly" : null) />
+                        }
+                        @if (!string.IsNullOrWhiteSpace(field.Hint))
+                        {
+                            <div class="form-text">@field.Hint</div>
+                        }
+                    </div>
+                }
+            }
+            <div class="col-12 d-flex flex-wrap gap-2 pt-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-2"></i>@Model.SubmitLabel</button>
+                <a class="btn btn-outline-secondary" href="@Model.CancelUrl">@Model.CancelLabel</a>
+            </div>
+        </form>
+    </div>
+</div>
