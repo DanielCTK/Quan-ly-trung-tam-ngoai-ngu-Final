@@ -1,12 +1,33 @@
-using Quan_ly_trung_tam_ngoai_ngu.Services.Interfaces;
-using Quan_ly_trung_tam_ngoai_ngu.Services.Mocks;
-using Quan_ly_trung_tam_ngoai_ngu.Services;
-using Quan_ly_trung_tam_ngoai_ngu.Services.Sql;
 using Quan_ly_trung_tam_ngoai_ngu.Models;
+using Quan_ly_trung_tam_ngoai_ngu.Services;
+using Quan_ly_trung_tam_ngoai_ngu.Services.Ef;
+using Quan_ly_trung_tam_ngoai_ngu.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using Quan_ly_trung_tam_ngoai_ngu.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("LanguageCenterDb"),
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(3);
+            sqlOptions.CommandTimeout(15);
+        });
+});
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -16,10 +37,9 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpMailOptions>(builder.Configuration.GetSection("Smtp"));
-builder.Services.AddSingleton<MockDataService>();
-builder.Services.AddScoped<IMockDataService, SqlServerDataService>();
-builder.Services.AddScoped<IDemoAuthService, SqlAuthService>();
-builder.Services.AddScoped<ILanguageCenterManagementService, SqlLanguageCenterManagementService>();
+builder.Services.AddScoped<IMockDataService, EfLanguageCenterReadService>();
+builder.Services.AddScoped<IDemoAuthService, EfAuthService>();
+builder.Services.AddScoped<ILanguageCenterManagementService, EfLanguageCenterManagementService>();
 builder.Services.AddScoped<IContactMessageService, ContactMessageService>();
 builder.Services.AddSingleton<IPublicSiteContentService, PublicSiteContentService>();
 
@@ -36,6 +56,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

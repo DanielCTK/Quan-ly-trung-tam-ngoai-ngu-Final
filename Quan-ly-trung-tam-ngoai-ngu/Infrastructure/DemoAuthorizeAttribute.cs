@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace Quan_ly_trung_tam_ngoai_ngu.Infrastructure;
 
@@ -16,9 +17,10 @@ public sealed class DemoAuthorizeAttribute : ActionFilterAttribute
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var session = context.HttpContext.Session;
-        var userRole = session.GetString(AppConstants.SessionDemoUserRole);
+        var user = context.HttpContext.User;
+        var userRole = user.FindFirstValue(ClaimTypes.Role) ?? session.GetString(AppConstants.SessionDemoUserRole);
 
-        if (string.IsNullOrWhiteSpace(userRole))
+        if (!(user.Identity?.IsAuthenticated ?? false) && string.IsNullOrWhiteSpace(userRole))
         {
             context.Result = new RedirectToActionResult("Login", "Account", new { area = "" });
             return;

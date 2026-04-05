@@ -62,12 +62,12 @@
                                 @demoName
                             </span>
                             <a class="btn btn-outline-primary btn-sm" href="@dashboardUrl">Bảng điều khiển</a>
-                            <a class="btn btn-primary btn-sm btn-logout" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                            <a class="btn btn-primary btn-sm btn-logout" asp-area="" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
                         }
                         else
                         {
-                            <a class="btn btn-ghost btn-sm" asp-controller="Account" asp-action="Login">Đăng nhập</a>
-                            <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                            <a class="btn btn-ghost btn-sm" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                            <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Account" asp-action="Register">Đăng ký</a>
                         }
                     </div>
                 </div>
@@ -105,9 +105,9 @@
                     <div class="col-sm-6 col-lg-2">
                         <h6 class="footer-title">Hỗ trợ</h6>
                         <div class="footer-links">
-                            <a asp-controller="Home" asp-action="Privacy">Chính sách riêng tư</a>
+                            <a asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách riêng tư</a>
                             <a href="@HomeSectionUrl("lien-he")">Liên hệ tư vấn</a>
-                            <a asp-controller="Account" asp-action="Login">Đăng nhập hệ thống</a>
+                            <a asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập hệ thống</a>
                         </div>
                     </div>
                     <div class="col-lg-4">

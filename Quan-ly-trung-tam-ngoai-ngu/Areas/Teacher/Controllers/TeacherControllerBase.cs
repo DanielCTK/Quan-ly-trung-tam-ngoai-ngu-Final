@@ -1,7 +1,8 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Quan_ly_trung_tam_ngoai_ngu.Models;
 using Quan_ly_trung_tam_ngoai_ngu.Controllers;
 using Quan_ly_trung_tam_ngoai_ngu.Infrastructure;
+using Quan_ly_trung_tam_ngoai_ngu.Models;
 using Quan_ly_trung_tam_ngoai_ngu.Services.Interfaces;
 using Quan_ly_trung_tam_ngoai_ngu.ViewModels.Common;
 
@@ -17,7 +18,9 @@ public abstract class TeacherControllerBase : ModuleControllerBase
     }
 
     protected string CurrentTeacherName =>
-        HttpContext.Session.GetString(AppConstants.SessionDemoUserDisplayName) ?? "Giáo viên";
+        HttpContext.User.FindFirstValue(ClaimTypes.Name) ??
+        HttpContext.Session.GetString(AppConstants.SessionDemoUserDisplayName) ??
+        "Giáo viên";
 
     protected List<CourseClass> GetTeacherClasses()
     {
@@ -27,7 +30,9 @@ public abstract class TeacherControllerBase : ModuleControllerBase
             return classes;
         }
 
-        var displayName = HttpContext.Session.GetString(AppConstants.SessionDemoUserDisplayName);
+        var displayName = HttpContext.User.FindFirstValue(ClaimTypes.Name) ??
+                          HttpContext.Session.GetString(AppConstants.SessionDemoUserDisplayName);
+
         if (string.IsNullOrWhiteSpace(displayName))
         {
             return classes;

@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Quan_ly_trung_tam_ngoai_ngu.Infrastructure;
 using Quan_ly_trung_tam_ngoai_ngu.Services.Interfaces;
@@ -23,7 +26,7 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         model.Title = "Đăng nhập";
         model.Subtitle = "Đăng nhập bằng tài khoản đang lưu trong cơ sở dữ liệu để truy cập đúng khu vực quản trị.";
@@ -44,6 +47,26 @@ public class AccountController : Controller
         HttpContext.Session.SetString(AppConstants.SessionDemoUserEmail, account.Email);
         HttpContext.Session.SetString(AppConstants.SessionDemoUserRole, account.Role);
         HttpContext.Session.SetString(AppConstants.SessionDemoUserDisplayName, account.FullName);
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, account.Id.ToString()),
+            new(ClaimTypes.Name, account.FullName),
+            new(ClaimTypes.Email, account.Email),
+            new(ClaimTypes.Role, account.Role),
+            new("username", account.Username)
+        };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(identity),
+            new AuthenticationProperties
+            {
+                IsPersistent = false,
+                AllowRefresh = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
+            });
 
         TempData[AppConstants.ToastMessageKey] = $"Đăng nhập thành công với vai trò {AppUi.RoleLabel(account.Role)}.";
         TempData[AppConstants.ToastTypeKey] = "success";
@@ -122,8 +145,9 @@ public class AccountController : Controller
         return RedirectToAction(nameof(Login));
     }
 
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         HttpContext.Session.Clear();
         TempData[AppConstants.ToastMessageKey] = "Đã đăng xuất khỏi phiên làm việc hiện tại.";
         TempData[AppConstants.ToastTypeKey] = "info";
